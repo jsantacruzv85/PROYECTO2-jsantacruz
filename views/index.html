@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heladería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #ff6384;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            color: #555;
+            text-align: center;
+        }
+
+        .messages {
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .messages.success {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .messages.error {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-evenly;
+            margin-bottom: 2rem;
+        }
+
+        .nav-container a {
+            text-decoration: none;
+            color: white;
+            background-color: #ff6384;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-container a:hover {
+            background-color: #ff4a6e;
+        }
+
+        ul#menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul#menu li {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f7f7f7;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        ul#menu li h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #ff6384;
+        }
+
+        ul#menu li p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+
+        ul#menu li ul {
+            margin: 0.5rem 0 0 1.5rem;
+            list-style-type: circle;
+        }
+
+        ul#menu li ul li {
+            margin: 0.25rem 0;
+        }
+
+        .button-container {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .button-container form {
+            display: inline-block;
+        }
+
+        .button-container button {
+            background-color: #ff6384;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #ff4a6e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bienvenidos a la Heladería</h1>
+    </header>
+    <main>
+        <!-- Mensajes Flash -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="messages-container">
+                    {% for category, message in messages %}
+                        <div class="messages {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Navegación -->
+        <div class="nav-container">
+            <a href="{{ url_for('resumen_ventas') }}">Resumen de Ventas</a>
+            <a href="{{ url_for('producto_mas_rentable') }}">Producto Más Rentable</a>
+            <a href="{{ url_for('mostrar_inventario') }}">Gestión de Inventarios</a>
+            <a href="{{ url_for('verificar_inventario_bajo') }}">Verificar Inventario Bajo</a>
+        </div>
+
+        <h2>Menú de Productos</h2>
+        <ul id="menu">
+            {% for producto in productos %}
+                <li>
+                    <h3>{{ producto.nombre }}</h3>
+                    <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
+                    <p><strong>Precio:</strong> ${{ producto.precio_publico }}</p>
+                    <p><strong>Ingredientes:</strong>
+                        <ul>
+                            <li>{{ producto.ingrediente1.nombre }}</li>
+                            <li>{{ producto.ingrediente2.nombre }}</li>
+                            <li>{{ producto.ingrediente3.nombre }}</li>
+                        </ul>
+                    </p>
+                    <div class="button-container">
+                        <form action="{{ url_for('vender', producto_id=producto.id) }}" method="POST">
+                            <button type="submit">Vender</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
